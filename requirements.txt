@@ -1,0 +1,6 @@
+langgraph
+langchain-google-genai
+cohere
+pinecone-client
+streamlit
+python-dotenv
