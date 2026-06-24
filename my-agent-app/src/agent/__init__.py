@@ -3,6 +3,6 @@
 This module defines a custom graph.
 """
 
-from agent.graph import graph
+from .graph import keigo_app
 
-__all__ = ["graph"]
+__all__ = ["keigo_app"]

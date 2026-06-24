@@ -1,6 +1,7 @@
 langgraph
-langchain-google-genai
+langgraph>=1.0.0
+langchain-groq
 cohere
-pinecone-client
+pinecone
 streamlit
 python-dotenv

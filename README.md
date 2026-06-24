@@ -54,3 +54,8 @@ Built around enterprise-grade developer tiers that require zero financial invest
 | **Vector DB (RAG)** | **Pinecone** or **Supabase Cloud** | **Free Tier:** 1 standard free index (Pinecone) or free web-hosted PostgreSQL tier (Supabase). Used for low-latency corporate template matching. |
 | **Embeddings** | **Cohere Embed v3** | **Free Tier:** Complimentary Developer Trial API keys.<br>**Why:** The `embed-multilingual-v3.0` algorithm is highly optimized for non-Latin character spacing and complex Japanese kanji syntax. |
 | **App Interface** | **Streamlit** or **Chainlit** | **Free:** Open-source UI libraries with free hosting via Streamlit Cloud or Hugging Face Spaces. Supports crisp, native Japanese character rendering out of the box. |
+
+### To Run:
+```
+streamlit run "c:/Users/doria/Visual Studio Code/SmartKeigo/my-agent-app/app.py"
+```

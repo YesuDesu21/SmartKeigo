@@ -1,54 +1,37 @@
-"""LangGraph single-node graph template.
+# src/agent/graph.py
+from langgraph.graph import StateGraph, START, END
+from .state import KeigoState
+from .agent import language_analyzer, keigo_specialist, cultural_coach
 
-Returns a predefined response. Replace logic and configuration as needed.
-"""
+# 1. Initialize the Graph
+builder = StateGraph(KeigoState)
 
-from __future__ import annotations
+# 2. Register Nodes
+builder.add_node("analyzer_node", language_analyzer)
+builder.add_node("specialist_node", keigo_specialist)
+builder.add_node("coach_node", cultural_coach)
 
-from dataclasses import dataclass
-from typing import Any, Dict
+# 3. Create Fixed Structural Edges
+builder.add_edge(START, "analyzer_node")
+builder.add_edge("analyzer_node", "specialist_node")
+builder.add_edge("specialist_node", "coach_node")
 
-from langgraph.graph import StateGraph
-from langgraph.runtime import Runtime
-from typing_extensions import TypedDict
+# 4. Create the Loop Condition (Conditional Edge)
+def route_approval(state: KeigoState):
+    if state["is_approved"] == True:
+        return "approved"
+    else:
+        return "rejected"
 
-
-class Context(TypedDict):
-    """Context parameters for the agent.
-
-    Set these when creating assistants OR when invoking the graph.
-    See: https://langchain-ai.github.io/langgraph/cloud/how-tos/configuration_cloud/
-    """
-
-    my_configurable_param: str
-
-
-@dataclass
-class State:
-    """Input state for the agent.
-
-    Defines the initial structure of incoming data.
-    See: https://langchain-ai.github.io/langgraph/concepts/low_level/#state
-    """
-
-    changeme: str = "example"
-
-
-async def call_model(state: State, runtime: Runtime[Context]) -> Dict[str, Any]:
-    """Process input and returns output.
-
-    Can use runtime context to alter behavior.
-    """
-    return {
-        "changeme": "output from call_model. "
-        f"Configured with {(runtime.context or {}).get('my_configurable_param')}"
+# If approved -> End the script. If rejected -> Route back to the Specialist
+builder.add_conditional_edges(
+    "coach_node",
+    route_approval,
+    {
+        "approved": END,
+        "rejected": "specialist_node"
     }
-
-
-# Define the graph
-graph = (
-    StateGraph(State, context_schema=Context)
-    .add_node(call_model)
-    .add_edge("__start__", "call_model")
-    .compile(name="New Graph")
 )
+
+# 5. Compile everything into an executable app object
+keigo_app = builder.compile()
